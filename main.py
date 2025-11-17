@@ -19,11 +19,12 @@ X_train = data_train[1:n] / 255.0
 
 
 def init_params():
-    W1 = np.random.randn(10, 784) - 0.5
-    b1 = np.random.randn(10, 1) - 0.5
-    W2 = np.random.randn(10, 10) - 0.5
-    b2 = np.random.randn(10, 1) - 0.5
+    W1 = np.random.randn(10, 784) * 0.01
+    b1 = np.zeros((10, 1))
+    W2 = np.random.randn(10, 10) * 0.01
+    b2 = np.zeros((10, 1))
     return W1, b1, W2, b2
+
 
 def ReLU(x):
     return np.maximum(0, x)
@@ -81,9 +82,9 @@ def gradient_descent(X, Y, iterations, alpha):
         Z1, A1, Z2, A2 = forward_propagation(W1, b1, W2, b2, X)
         dW1, db1, dW2, db2 = back_propagation(Z1, A1, Z2, A2, W2, X, Y)
         W1, b1, W2, b2 = update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha)
-        if i % 10 == 0:
+        if i % 500 == 0:
             print(f"Iteration {i} / {iterations}")
             print(f"Accuracy: {get_accuracy(get_predictions(A2), Y)}")
     return W1, b1, W2, b2
 
-W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 100, 0.01)
+W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 10000, 0.1)
