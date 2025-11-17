@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from numpy import exp
+from matplotlib import pyplot as plt
 
 data = pd.read_csv('data/train.csv')
 
@@ -11,7 +12,7 @@ np.random.shuffle(data)
 
 data_dev = data[0:1000].T
 Y_dev = data_dev[0]
-X_Dev = data_dev[1:n] / 255.0
+X_dev = data_dev[1:n] / 255.0
 
 data_train = data[1000:m].T
 Y_train = data_train[0]
@@ -82,9 +83,32 @@ def gradient_descent(X, Y, iterations, alpha):
         Z1, A1, Z2, A2 = forward_propagation(W1, b1, W2, b2, X)
         dW1, db1, dW2, db2 = back_propagation(Z1, A1, Z2, A2, W2, X, Y)
         W1, b1, W2, b2 = update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha)
-        if i % 500 == 0:
+        if i % 100 == 0:
             print(f"Iteration {i} / {iterations}")
             print(f"Accuracy: {get_accuracy(get_predictions(A2), Y)}")
     return W1, b1, W2, b2
 
-W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 10000, 0.1)
+W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 2000, 0.1)
+
+def make_predictions(X, W1, b1, W2, b2):
+    _, _, _, A2 = forward_propagation(W1, b1, W2, b2, X)
+    predictions = get_predictions(A2)
+    return predictions
+
+def test_prediction(index, W1, b1, W2, b2):
+    current_image = X_train[:, index, None]
+    prediction = make_predictions(X_train[:, index, None], W1, b1, W2, b2)
+    label = Y_train[index]
+    print(f"Prediction: {prediction}")
+    print(f"Label: {label}")
+
+    current_image = current_image.reshape((28, 28)) * 255
+    plt.gray()
+    plt.imshow(current_image, interpolation="nearest")
+    plt.show()
+
+dev_predictions = make_predictions(X_dev, W1, b1, W2, b2)
+get_accuracy(dev_predictions, Y_dev)
+
+while True:
+    test_prediction(int(input("Which plot would you like to see? ")), W1, b1, W2, b2)
