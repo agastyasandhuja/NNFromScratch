@@ -108,7 +108,7 @@ def test_prediction(index, W1, b1, W2, b2):
     plt.show()
 
 dev_predictions = make_predictions(X_dev, W1, b1, W2, b2)
-get_accuracy(dev_predictions, Y_dev)
+print(f"Dev accuracy: {get_accuracy(dev_predictions, Y_dev)}")
 
 while True:
     test_prediction(int(input("Which plot would you like to see? ")), W1, b1, W2, b2)
